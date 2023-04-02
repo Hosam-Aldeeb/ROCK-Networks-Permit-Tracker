@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <h1>Form Data</h1>
+    <table>
+      <tr>
+        <th>FSA Number</th>
+        <th>Permit Link</th>
+        <th>Name</th>
+        <th>Date Submitted</th>
+        <th>Additional Info</th>
+        <th>City</th>
+        <th>Permit Type</th>
+        <th>Permit Number</th>
+      </tr >
+      <% formdata.forEach(function(form){ %>
+      <tr class=formdata>
+        <td><%= form.FSA_Number %></td>
+        <td><%= form.Permit_Link %></td>
+        <td><%= form.Name %></td>
+        <td><%= form.Date_Submitted %></td>
+        <td><%= form.Additional_Info %></td>
+        <td><%= form.City %></td>
+        <td><%= form.Permit_Type %></td>
+        <td><%= form.Permit_Number %></td>
+      </tr>
+      <% }); %>
+    </table> -->
+
+     
+
+     <body>
+        <div class="testbox">
+          <form action="/addpermit" method="POST">
+            <div class="formdata">
+                <div class="banner">
+              <h1>ROCK Networks Permit Application Tracking</h1>
+            </div>
+            <br/>
+            <p>An internal tool for Rock Networks to track H&M Permit Submissions.</p>
+            <br/>
+            <div class="colums">
+              <div class="item">
+                <label for="FSA Number">FSA Number<span>*</span></label>
+                <input id="number" type="number" name="fsaNumber" required/>
+              </div>
+              <div class="item">
+                <label for="eaddress">Permit Link<span></span></label>
+                <input id="eaddress" type="text"   name="permitLink"/>
+              </div>
+              <div class="item">
+                <label for="number">Assigned Permit Number<span>*</span></label>
+                <input id="number" type="number"   name="permitNumber" required/>
+              </div>
+              <div class="item">
+                <label for="number">Internal Permit Number<span>*</span></label>
+                <input id="number" type="text"   name="internalpermitNumber" required/>
+              </div>
+              <div class="item">
+                <label for="street">Date Submitted<span>*</span></label>
+                <input id="street" type="date"   name="dateSubmitted" required/>
+                <span>
+                
+                
+              </div>
+              <div class="item">
+                <label for="city">City/Town<span>*</span></label>
+                <input id="city" type="text"   name="city" required/>
+              </div>
+              <div class="item">
+                <label for="employee">Name<span>*</span></label>
+                <input id="name" type="text"   name="name" required/>
+              </div>
+              <div class="item">
+                <label for="url">Internal Permit Link<span>*</span></label>
+                <input id="url" type="url"   name="internalPermitLink" required/>
+              </div>
+             
+              
+    
+           </div>
+              
+            </div>
+            
+            <div class="item" required>
+              <p>Permit Type<span>*</span></p>
+              <select name="permitType">
+                <option selected value="" disabled selected></option>
+                <option value="MTO" >MTO Highway</option>
+            <option value="Municipality">Municipality</option>
+            <option value="Hydro One">Hydro One Pole Attachment</option>
+            <option value="Algoma Power" >Algoma Power Pole Attachment</option>
+            <option value="Bell" >Bell Pole Attachment</option>
+            <option value="Water Crossing" >Bridge Crossing</option>
+            <option value="Highway Crossing" >Highway Crossing</option>
+            <option value=" Rail Crossing" >Rail Crossing</option>
+            
+            <option value="Natural Resource" >Natural Resource Permit</option>
+          </select>
+            </div>
+            
+            <div class="item">
+              <label for="visit">Additional Notes</label>
+              <textarea name ='additionalInfo'id="visit" rows="3"></textarea>
+            </div>
+            
+            
+            <div class="btn-block">
+                <button type="back" href="index2.html" onclick="history.back()">Go Back</button>
+              <button type="submit" >Submit</button>
+             
+            </div>
+          </form>
+        </div>
+      </body> -->
+    
+
+    <script src='js/main.js'></script>
+</body>
+</html>

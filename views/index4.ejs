@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/style4.css" type="text/css">
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+     
+
+     <body>
+        <div class="testbox">
+          <form action="/edit/<%= formdata._id %>" method="POST">
+            <div class="formdata">
+                <div class="banner">
+              <h1>ROCK Networks Permit Application Tracking</h1>
+            </div>
+            <br/>
+            <p>An internal tool for Rock Networks to track H&M Permit Submissions.</p>
+            <br/>
+            <div class="colums">
+              <div class="item">
+                <label for="FSA Number">FSA Number<span>*</span></label>
+                <input id="number" type="number" name="fsaNumber" value="<%= formdata.FSA_Number %>"  placeholder="<%= formdata.FSA_Number %>"/>
+              </div>
+              <div class="item">
+                <label for="eaddress">Permit Link<span></span></label>
+                <input id="eaddress" type="text"   name="permitLink" value="<%= formdata.Permit_Link %>" placeholder="<%= formdata.Permit_Link %>"/>
+              </div>
+              <div class="item">
+                <label for="number">Assigned Permit Number<span>*</span></label>
+                <input id="number" type="number"   name="permitNumber" value="<%= formdata.Assigned_Permit_Number %>" required placeholder="<%= formdata.Assigned_Permit_Number %>"/>
+              </div>
+              <div class="item">
+                <label for="number">Internal Permit Number<span>*</span></label>
+                <input id="number" type="text"   name="internalpermitNumber" value="<%= formdata.Internal_Permit_Number %>" required placeholder="<%= formdata.Internal_Permit_Number %>"/>
+              </div>
+              <div class="item">
+                <label for="street">Date Submitted<span>*</span></label>
+                <input id="street" type="date"   name="dateSubmitted" value="<%= formdata.Date_Submitted %>" required value="<%= formdata.Date_Submitted %>"/>
+                <span>
+                
+                
+              </div>
+              <div class="item">
+                <label for="city">City/Town<span>*</span></label>
+                <input id="city" type="text"   name="city" value="<%= formdata.City %>" required placeholder="<%= formdata.City %>"/>
+              </div>
+              <div class="item">
+                <label for="employee">Name<span>*</span></label>
+                <input id="name" type="text"   name="name" value="<%= formdata.Name %>" required placeholder="<%= formdata.Name %>"/>
+              </div>
+              <div class="item">
+                <label for="url">Internal Permit Link<span>*</span></label>
+                <input id="url" type="url"   name="internalPermitLink" value="<%= formdata.Internal_Permit_Link %>" required placeholder="<%= formdata.Internal_Permit_Link %>"/>
+              </div>
+             
+              
+    
+           </div>
+              
+            </div>
+            
+            <div class="item" required>
+              <p>Permit Type<span>*</span></p>
+              <select name="permitType">
+                <option selected value=<%= formdata.Permit_Type %> selected><%= formdata.Permit_Type %></option>
+            <option value="MTO Highway" >MTO Highway</option>
+            <option value="Municipality">Municipality</option>
+            <option value="Hydro One">Hydro One Pole Attachment</option>
+            <option value="Algoma Power" >Algoma Power Pole Attachment</option>
+            <option value="Bell Pole Attachment" >Bell Pole Attachment</option>
+            <option value="Bridge Crossing" >Bridge Crossing</option>
+            <option value="Highway Crossing" >Highway Crossing</option>
+            <option value=" Rail Crossing" >Rail Crossing</option>
+            
+            <option value="Natural Resource" >Natural Resource Permit</option>
+          </select>
+            </div>
+            
+            <div class="item">
+              <label for="visit">Additional Notes</label>
+              <input name ='additionalInfo'id="visit" rows="3" value="<%= formdata.Additional_Info %>"placeholder="<%= formdata.Additional_Info %>"></textarea>
+            </div>
+            
+            
+            <div class="btn-block">
+                <button type="back" href="index2.html" onclick="history.back()">Go Back</button>
+              <button type="submit" >Apply</button>
+             
+            </div>
+          </form>
+        </div>
+      </body> -->
+    
+
+    <script src='js/main.js'></script>
+</body>
+</html>

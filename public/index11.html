@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>ROCK Networks Permit Application Tracking</title>
+  
+  
+  
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+< <body>
+    <div class="testbox">
+      <form action="/">
+        <div class="banner">
+          <h1>ROCK Networks Permit Application Tracking</h1>
+        </div>
+        <br/>
+        <p>An internal tool for Rock Networks to track H&M Permit Submissions.</p>
+        <br/>
+        <div class="colums">
+          <div class="item">
+            <label for="FSA Number">FSA Number<span>*</span></label>
+            <input id="number" type="number" name="number" required/>
+          </div>
+          <div class="item">
+            <label for="eaddress">Permit Link<span></span></label>
+            <input id="eaddress" type="text"   name="eaddress"/>
+          </div>
+          <div class="item">
+            <label for="number">Permit Number<span>*</span></label>
+            <input id="number" type="number"   name="number" required/>
+          </div>
+          <div class="item">
+            <label for="street">Date Submitted<span>*</span></label>
+            <input id="street" type="date"   name="street" required/>
+			<span>
+			<i class="fas fa-calendar-alt"></i></span>
+			
+          </div>
+          <div class="item">
+            <label for="city">City/Town<span>*</span></label>
+            <input id="city" type="text"   name="city" required/>
+          </div>
+          <div class="item">
+            <label for="employee">Name<span>*</span></label>
+            <input id="name" type="text"   name="name" required/>
+          </div>
+          
+        </div>
+        
+        <div class="item" required>
+          <p>Permit Type<span>*</span></p>
+          <select>
+            <option selected value="" disabled selected></option>
+            <option value="b" >MTO</option>
+            <option value="ch">Municipality</option>
+            <option value="v">Hydro One</option>
+            <option value="n">None</option>
+          </select>
+        </div>
+        
+        <div class="item">
+          <label for="visit">Additional Notes</label>
+          <textarea id="visit" rows="3"></textarea>
+        </div>
+        
+        <div class="btn-block">
+			<button type="back" href="index2.html">Go Back</button>
+          <button type="submit" href="/">Submit</button>
+		 
+        </div>
+      </form>
+    </div>
+  </body>

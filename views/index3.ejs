@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>ROCK Networks Permit Application Tracking</title>
+    
+    
+    
+        <link rel="stylesheet" href="css/style3.css">
+        <style>
+           .box {
+    position: absolute;
+    z-index: 100;
+    top: 100%;
+    left: 0;
+    width: 300px;
+    height: 300px;
+    display: none;
+  }
+  .container {
+    position: relative;
+  }
+  td:hover .box {
+    display: block;
+  }
+        </style>
+    
+  </head>
+  <h2>Permit Records</h2>
+  <div class="table-wrapper">
+      <table class="fl-table">
+          <thead>
+          <tr>
+            <th>Permit Type</th>
+              <th>FSA Number</th>
+              <th>Assigned Permit Number</th>
+              <th>Internal Permit Number</th>
+              <th>Date Submitted</th>
+              <th>City/Town</th>
+              <th>Name</th>
+              <th>Permit Link</th>
+              <th>Internal Permit Link</th>
+              <th>Notes</th>
+              <th>Status</th>
+              <th>Edit</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <% formdata.forEach(function(form){ %>
+                <tr class=formdata>
+                <td><%= form.Permit_Type %></td>
+                  <td><%= form.FSA_Number %></td>
+                  <td><%= form.Assigned_Permit_Number %></td>
+                  <td><%= form.Internal_Permit_Number %></td>
+                  <td><%= form.Date_Submitted %></td>
+                  <td><%= form.City %></td>
+                  <td><%= form.Name %></td>
+                  <td><%= form.Permit_Link %></td>
+                  <td>
+                    <div class="container">
+                    <a href="<%= form.Internal_Permit_Link %>" target="_blank"><%= form.Internal_Permit_Link %></a>
+                    <div class="box">
+                      <iframe src="<%= form.Internal_Permit_Link %>" width = "350px" height = "350px"></iframe>
+                    </div> 
+                  </div>
+                  </td>
+                  <td ><%= form.Additional_Info %></td>
+                  <td class=<%= form.status %>
+                    <% 
+                      const now = new Date();
+                      const submitted = new Date(form.Date_Submitted);
+                      const diff = now - submitted;
+                      const days = diff / (1000 * 60 * 60 * 24);
+                      if (days >= 60) {
+                        form.status = "red";
+                      } else if (days >= 30) {
+                        form.status = "yellow";
+                      } else {
+                        form.status = "green";
+                      }
+                    %>
+                    <%= form.status %>
+                  </td>
+                  <td><a href="/edit/<%= form._id %>">Edit</a></td>
+                </tr>
+                <% }); %>
+          <tr> 
+              
+          </tr>
+          <tbody>
+      </table>
+  </div>
+  
+</html>
