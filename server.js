@@ -5,7 +5,8 @@ const PORT = 4141;
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
-const auth = require("./auth.middleware");
+const { auth, adminAuth } = require("./auth.middleware");
+const jwtDecode = require("jwt-decode");
 require("dotenv").config();
 console.log(process.env.DB_STRING);
 
@@ -30,7 +31,12 @@ app.use(cookieParser());
 // })
 
 app.get("/", async (req, res) => {
-  res.render("index5.ejs");
+  const token = req.cookies?.token;
+  if ((token && jwtDecode(token).exp < Date.now() / 1000) || !token) {
+    res.render("index5.ejs");
+  } else {
+    res.redirect("/home");
+  }
 });
 
 app.get("/home", auth, (req, res) => {
@@ -125,11 +131,12 @@ app.post("/register", async (req, res) => {
       const formData = {
         Email: req.body.email,
         Password: hashedPassword,
+        Type: "user",
       };
       db.collection("users")
         .insertOne(formData)
         .then((result) => {
-          const token = jwt.sign({ email: req.body.email }, process.env.JWT_SECRET, {
+          const token = jwt.sign({ email: req.body.email, type: "user" }, process.env.JWT_SECRET, {
             expiresIn: "1d",
           });
           res.cookie("token", token);
@@ -154,11 +161,11 @@ app.post("/login", async (req, res) => {
         return item.domain === requestedDomain[1];
       })
     ) {
-      const user = await db.collection("users").findOne({ Email: req.body.email });
+      const user = await db.collection("users").findOne({ Email: req.body.email, Type: "user" });
       if (!user) {
         throw new Error("User not found.");
       } else if (await bcrypt.compare(req.body.password, user.Password)) {
-        const token = jwt.sign({ email: req.body.email }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ email: user.Email, type: user.Type }, process.env.JWT_SECRET, {
           expiresIn: "1d",
         });
         res.cookie("token", token);
@@ -171,6 +178,59 @@ app.post("/login", async (req, res) => {
     }
   } catch (error) {
     res.render("error.ejs", { errorMessage: error.message });
+  }
+});
+
+app.get("/adminlogin", async (req, res) => {
+  res.render("index7.ejs");
+});
+
+app.post("/adminlogin", async (req, res) => {
+  try {
+    const user = await db.collection("users").findOne({ Email: req.body.email, Type: "admin" });
+    if (!user) {
+      throw new Error("User not found.");
+    } else if (req.body.password === user.Password) {
+      const token = jwt.sign({ email: user.Email, type: user.Type }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+      });
+      res.cookie("token", token);
+      res.redirect("/addemaildomains");
+    } else {
+      throw new Error("Invalid password.");
+    }
+  } catch (error) {
+    res.render("error.ejs", { errorMessage: error.message });
+  }
+});
+
+app.get("/addemaildomains", adminAuth, async (req, res) => {
+  res.render("index6.ejs");
+});
+
+app.post("/addemaildomains", adminAuth, async (req, res) => {
+  try {
+    const domains = req.body.email_domain.split(",");
+    const domainsInserted = Promise.all(
+      domains.map(async (domain) => {
+        const isDomainAvailable = await db
+          .collection("domain_whitelist")
+          .findOne({ domain: domain.trim() });
+        if (!isDomainAvailable) {
+          await db
+            .collection("domain_whitelist")
+            .insertOne({ domain: domain.trim() })
+            .then((result) => {
+              console.log("Domain Inserted", domain.trim());
+            });
+        }
+      })
+    );
+    domainsInserted.then(() => {
+      res.render("success.ejs", { successMessage: "Email domains inserted successfully." });
+    });
+  } catch (error) {
+    console.error("error");
   }
 });
 
