@@ -79,3 +79,21 @@
 //     const bingMapsUrl = `https://www.bing.com/maps/directions?rtp=pos.${lat1}_${long1}~pos.${lat2}_${long2}&mode=D`;
 //     // window.location.href = bingMapsUrl;
 //   });
+
+function deleteAllCookies(type) {
+  const cookies = document.cookie.split(";");
+  console.log("inside delete cookies");
+
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i];
+    const eqPos = cookie.indexOf("=");
+    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  }
+
+  if (type === "admin") {
+    window.location.href = "/admin-login";
+  } else {
+    window.location.href = "/";
+  }
+}

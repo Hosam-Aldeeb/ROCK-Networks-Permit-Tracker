@@ -7,6 +7,16 @@
     <title>ROCK Networks Permit Application Tracking</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="css/style5.css">
+    <script>
+      function validateForm() {
+        let password = document.forms["myForm"]["password"].value;
+        let confirmPassword = document.forms["myForm"]["confirmPassword"].value;
+        if (password !== confirmPassword) {
+          alert("Password & Confirm password should be matched.");
+          return false;
+        }
+      }
+      </script>
 </head>
 <body>
   <div class="container">
@@ -27,7 +37,7 @@
     </div>
     <div class="registration form">
       <header>Signup</header>
-      <form action="/register" method="POST">
+      <form name="myForm" action="/register" onsubmit="return validateForm()" method="POST">
         <input type="text" name="email" placeholder="Enter your email" required>
         <input type="password" name="password" placeholder="Create a password" required>
         <input type="password" name="confirmPassword" placeholder="Confirm your password" required>

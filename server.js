@@ -181,11 +181,16 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/adminlogin", async (req, res) => {
-  res.render("index7.ejs");
+app.get("/admin-login", async (req, res) => {
+  const token = req.cookies?.token;
+  if ((token && jwtDecode(token).exp < Date.now() / 1000) || !token) {
+    res.render("index7.ejs");
+  } else {
+    res.redirect("/add-email-domains");
+  }
 });
 
-app.post("/adminlogin", async (req, res) => {
+app.post("/admin-login", async (req, res) => {
   try {
     const user = await db.collection("users").findOne({ Email: req.body.email, Type: "admin" });
     if (!user) {
@@ -195,20 +200,20 @@ app.post("/adminlogin", async (req, res) => {
         expiresIn: "1d",
       });
       res.cookie("token", token);
-      res.redirect("/addemaildomains");
+      res.redirect("/add-email-domains");
     } else {
       throw new Error("Invalid password.");
     }
   } catch (error) {
-    res.render("error.ejs", { errorMessage: error.message });
+    res.render("admin-error.ejs", { errorMessage: error.message });
   }
 });
 
-app.get("/addemaildomains", adminAuth, async (req, res) => {
+app.get("/add-email-domains", adminAuth, async (req, res) => {
   res.render("index6.ejs");
 });
 
-app.post("/addemaildomains", adminAuth, async (req, res) => {
+app.post("/add-email-domains", adminAuth, async (req, res) => {
   try {
     const domains = req.body.email_domain.split(",");
     const domainsInserted = Promise.all(

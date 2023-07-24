@@ -183,6 +183,10 @@ html, body {
       .coordinates{
         display: flex;
       }
+
+      .logout-btn {
+        margin: 20px 0px 0px 20px;
+      }
       
       
     @media (min-width: 568px) {

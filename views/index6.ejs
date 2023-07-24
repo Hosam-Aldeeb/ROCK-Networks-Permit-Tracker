@@ -16,12 +16,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="js/main.js"></script>
 </head>
 <body>
 
-     <body>
+     <body> 
+      <div class="logout-btn">
+        <button type="submit" onclick="deleteAllCookies('admin')">Log out</button>
+      </div>
         <div class="testbox">
-          <form action="/addemaildomains" method="POST">
+          <form action="/add-email-domains" method="POST">
             <div class="formdata">
                 <div class="banner">
               <h1>Add Email Domains to Whitelist</h1>
@@ -33,14 +37,10 @@
                 <input type="text" name="email_domain" required/>
             </div>
             <div class="btn-block">
-                <!-- <button type="back" href="#" onclick="history.back()">Go Back</button> -->
                 <button type="submit" >Submit</button>
             </div>
           </form>
         </div>
-      </body> -->
-    
-
-    <!-- <script src='js/main.js'></script> -->
+      </body>
 </body>
 </html>

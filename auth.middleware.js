@@ -16,7 +16,7 @@ const adminAuth = (req, res, next) => {
     if (user && user.type === "admin") {
       return next();
     }
-    res.redirect("/adminlogin"); // Redirect to admin login page if not authenticated
+    res.redirect("/admin-login"); // Redirect to admin login page if not authenticated
   });
 };
 
