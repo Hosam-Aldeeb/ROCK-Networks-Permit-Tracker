@@ -7,6 +7,7 @@ var jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
 const { auth, adminAuth } = require("./auth.middleware");
 const jwtDecode = require("jwt-decode");
+const { sendEmail } = require("./utilities");
 require("dotenv").config();
 console.log(process.env.DB_STRING);
 
@@ -119,30 +120,42 @@ app.post("/addpermit", (req, response) => {
 
 app.post("/register", async (req, res) => {
   try {
+    const { full_name, email, password } = req.body;
     const domains = await db.collection("domain_whitelist").find().toArray();
-    const requestedDomain = req.body.email.split("@");
+    const requestedDomain = email.split("@");
 
     if (
       domains.some((item) => {
         return item.domain === requestedDomain[1];
       })
     ) {
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
-      const formData = {
-        Email: req.body.email,
-        Password: hashedPassword,
-        Type: "user",
-      };
-      db.collection("users")
-        .insertOne(formData)
-        .then((result) => {
-          const token = jwt.sign({ email: req.body.email, type: "user" }, process.env.JWT_SECRET, {
-            expiresIn: "1d",
-          });
-          res.cookie("token", token);
-          res.redirect("/home");
-        })
-        .catch((error) => console.error(error));
+      const user = await db.collection("users").findOne({ Email: email, Type: "user" });
+      if (user) {
+        throw new Error("User has already registered with this email.");
+      } else {
+        var ObjectID = require("mongodb").ObjectID;
+        const userId = new ObjectID();
+        const hashedPassword = await bcrypt.hash(password, 10);
+        let baseUrl = req.protocol + "://" + req.get("host");
+        const formData = {
+          _id: userId,
+          Full_Name: full_name,
+          Email: email,
+          Password: hashedPassword,
+          Verified: false,
+          Type: "user",
+        };
+        db.collection("users")
+          .insertOne(formData)
+          .then(async (result) => {
+            await sendEmail(full_name, email, baseUrl, userId, db);
+            res.render("success2.ejs", {
+              successMessage:
+                "Registered successfully, email verification link has been sent to your email address. Please verify your email to login.",
+            });
+          })
+          .catch((error) => console.error(error));
+      }
     } else {
       throw new Error("Access deny, your email is not matched with required domains.");
     }
@@ -153,18 +166,21 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   try {
+    const { email, password } = req.body;
     const domains = await db.collection("domain_whitelist").find().toArray();
-    const requestedDomain = req.body.email.split("@");
+    const requestedDomain = email.split("@");
 
     if (
       domains.some((item) => {
         return item.domain === requestedDomain[1];
       })
     ) {
-      const user = await db.collection("users").findOne({ Email: req.body.email, Type: "user" });
+      const user = await db.collection("users").findOne({ Email: email, Type: "user" });
       if (!user) {
         throw new Error("User not found.");
-      } else if (await bcrypt.compare(req.body.password, user.Password)) {
+      } else if (!user.Verified) {
+        throw new Error("Email not verified, please verify your email to login.");
+      } else if (await bcrypt.compare(password, user.Password)) {
         const token = jwt.sign({ email: user.Email, type: user.Type }, process.env.JWT_SECRET, {
           expiresIn: "1d",
         });
@@ -192,10 +208,11 @@ app.get("/admin-login", async (req, res) => {
 
 app.post("/admin-login", async (req, res) => {
   try {
-    const user = await db.collection("users").findOne({ Email: req.body.email, Type: "admin" });
+    const { email, password } = req.body;
+    const user = await db.collection("users").findOne({ Email: email, Type: "admin" });
     if (!user) {
       throw new Error("User not found.");
-    } else if (req.body.password === user.Password) {
+    } else if (password === user.Password) {
       const token = jwt.sign({ email: user.Email, type: user.Type }, process.env.JWT_SECRET, {
         expiresIn: "1d",
       });
@@ -236,6 +253,33 @@ app.post("/add-email-domains", adminAuth, async (req, res) => {
     });
   } catch (error) {
     console.error("error");
+  }
+});
+
+app.get("/verify-email", async (req, res) => {
+  try {
+    const { token, user_id } = req.query;
+    var ObjectID = require("mongodb").ObjectID;
+    const userId = new ObjectID(user_id);
+    const validation = await db.collection("validations").findOne({ User: userId, Type: "email" });
+
+    if (!validation) {
+      throw new Error("Link expired.");
+    }
+
+    if (validation.Token !== token) {
+      throw new Error("Invalid token.");
+    }
+
+    try {
+      await db.collection("users").updateOne({ _id: userId }, { $set: { Verified: true } });
+      await db.collection("validations").deleteOne({ _id: validation._id });
+      res.render("verify-email-success.ejs", { successMessage: "Email verified successfully." });
+    } catch (error) {
+      console.error("error");
+    }
+  } catch (error) {
+    res.render("verify-email-error.ejs", { errorMessage: error.message });
   }
 });
 
