@@ -7,12 +7,22 @@
     <title>ROCK Networks Permit Application Tracking</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="css/style5.css">
+    <script>
+      function validateForm() {
+        let email = document.forms["myForm"]["email"].value;
+        const pattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,3}$/;
+        if (!pattern.test(email)) {
+          alert("Please enter the valid email");
+          return false;
+        }
+      }
+    </script>
 </head>
 <body>
   <div class="container">
     <div class="login form">
       <header>Admin Login</header>
-      <form action="/admin-login" method="POST">
+      <form name="myForm" action="/admin-login" onsubmit="return validateForm()" method="POST">
         <input type="text" name="email" placeholder="Enter your email" required>
         <input type="password" name="password" placeholder="Enter your password" required>
         <input type="submit" class="button" value="Login">

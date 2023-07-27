@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const MongoClient = require("mongodb").MongoClient;
 const PORT = 4141;
-const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
 const { auth, adminAuth } = require("./auth.middleware");
@@ -118,55 +117,9 @@ app.post("/addpermit", (req, response) => {
     .catch((error) => console.error(error));
 });
 
-app.post("/register", async (req, res) => {
-  try {
-    const { full_name, email, password } = req.body;
-    const domains = await db.collection("domain_whitelist").find().toArray();
-    const requestedDomain = email.split("@");
-
-    if (
-      domains.some((item) => {
-        return item.domain === requestedDomain[1];
-      })
-    ) {
-      const user = await db.collection("users").findOne({ Email: email, Type: "user" });
-      if (user) {
-        throw new Error("User has already registered with this email.");
-      } else {
-        var ObjectID = require("mongodb").ObjectID;
-        const userId = new ObjectID();
-        const hashedPassword = await bcrypt.hash(password, 10);
-        let baseUrl = req.protocol + "://" + req.get("host");
-        const formData = {
-          _id: userId,
-          Full_Name: full_name,
-          Email: email,
-          Password: hashedPassword,
-          Verified: false,
-          Type: "user",
-        };
-        db.collection("users")
-          .insertOne(formData)
-          .then(async (result) => {
-            await sendEmail(full_name, email, baseUrl, userId, db);
-            res.render("success2.ejs", {
-              successMessage:
-                "Registered successfully, email verification link has been sent to your email address. Please verify your email to login.",
-            });
-          })
-          .catch((error) => console.error(error));
-      }
-    } else {
-      throw new Error("Access deny, your email is not matched with required domains.");
-    }
-  } catch (error) {
-    res.render("error.ejs", { errorMessage: error.message });
-  }
-});
-
 app.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email } = req.body;
     const domains = await db.collection("domain_whitelist").find().toArray();
     const requestedDomain = email.split("@");
 
@@ -176,19 +129,8 @@ app.post("/login", async (req, res) => {
       })
     ) {
       const user = await db.collection("users").findOne({ Email: email, Type: "user" });
-      if (!user) {
-        throw new Error("User not found.");
-      } else if (!user.Verified) {
-        throw new Error("Email not verified, please verify your email to login.");
-      } else if (await bcrypt.compare(password, user.Password)) {
-        const token = jwt.sign({ email: user.Email, type: user.Type }, process.env.JWT_SECRET, {
-          expiresIn: "1d",
-        });
-        res.cookie("token", token);
-        res.redirect("/home");
-      } else {
-        throw new Error("Invalid password.");
-      }
+      await sendEmail(email, db, user);
+      res.render("verify-code.ejs", { email: email });
     } else {
       throw new Error("Access deny, your email is not matched with required domains.");
     }
@@ -256,30 +198,23 @@ app.post("/add-email-domains", adminAuth, async (req, res) => {
   }
 });
 
-app.get("/verify-email", async (req, res) => {
+app.post("/verify-code", async (req, res) => {
   try {
-    const { token, user_id } = req.query;
-    var ObjectID = require("mongodb").ObjectID;
-    const userId = new ObjectID(user_id);
-    const validation = await db.collection("validations").findOne({ User: userId, Type: "email" });
+    const { email, verification_code } = req.body;
+    const user = await db.collection("users").findOne({ Email: email });
 
-    if (!validation) {
-      throw new Error("Link expired.");
+    if (user.VerificationCode !== parseInt(verification_code)) {
+      throw new Error("Invalid verification code, please try again.");
     }
 
-    if (validation.Token !== token) {
-      throw new Error("Invalid token.");
-    }
-
-    try {
-      await db.collection("users").updateOne({ _id: userId }, { $set: { Verified: true } });
-      await db.collection("validations").deleteOne({ _id: validation._id });
-      res.render("verify-email-success.ejs", { successMessage: "Email verified successfully." });
-    } catch (error) {
-      console.error("error");
-    }
+    await db.collection("users").updateOne({ _id: user._id }, { $unset: { VerificationCode: "" } });
+    const token = jwt.sign({ email: user.Email, type: user.Type }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+    res.cookie("token", token);
+    res.redirect("/home");
   } catch (error) {
-    res.render("verify-email-error.ejs", { errorMessage: error.message });
+    res.render("error.ejs", { errorMessage: error.message });
   }
 });
 

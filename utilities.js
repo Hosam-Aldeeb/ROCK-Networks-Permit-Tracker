@@ -1,5 +1,4 @@
 const AWS = require("aws-sdk");
-const { randomUUID } = require("node:crypto");
 require("dotenv").config();
 
 const SES = new AWS.SES({
@@ -8,13 +7,21 @@ const SES = new AWS.SES({
   region: process.env.REGION,
 });
 
-const sendEmail = async (full_name, email, baseUrl, userId, db) => {
-  var ObjectID = require("mongodb").ObjectID;
-  const id = new ObjectID();
-  const user_id = new ObjectID(userId);
-  const token = randomUUID();
-  const data = { _id: id, Token: token, Type: "email", User: user_id };
-  await db.collection("validations").insertOne(data);
+const sendEmail = async (email, db, user) => {
+  const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+  if (!user) {
+    const formData = {
+      Email: email,
+      Type: "user",
+      VerificationCode: verificationCode,
+    };
+    await db.collection("users").insertOne(formData);
+  } else {
+    await db
+      .collection("users")
+      .updateOne({ _id: user._id }, { $set: { VerificationCode: verificationCode } });
+  }
 
   let params = {
     Source: "jin.choe@rocknetworks.com",
@@ -26,12 +33,12 @@ const sendEmail = async (full_name, email, baseUrl, userId, db) => {
       Body: {
         Html: {
           Charset: "UTF-8",
-          Data: `Hello ${full_name}, </br></br> <p>Click on the following link to verify your email - <a href="${baseUrl}/verify-email?token=${token}&user_id=${user_id}">${baseUrl}/verify-email?token=${token}&user_id=${user_id}</a></p>`,
+          Data: `Verification Code - <span><b>${verificationCode}</b></span>`,
         },
       },
       Subject: {
         Charset: "UTF-8",
-        Data: `Email verification!`,
+        Data: `Email Verification Code`,
       },
     },
   };

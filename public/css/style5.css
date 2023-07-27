@@ -90,3 +90,11 @@ body{
 .signup label:hover{
   text-decoration: underline;
 }
+
+.code_text {
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #009579;
+}
