@@ -17,6 +17,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="js/main.js"></script>
+    <script>
+      function validateForm() {
+        let emailDomains = document.forms["myForm"]["email_domain"].value;
+        const domains = emailDomains.split(",");
+        const pattern = /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}$/i;
+        for(let i = 0; i < domains.length; i++) {
+          if (!pattern.test(domains[i].trim())) {
+            alert("Please enter the valid domain");
+            return false;
+            break;
+          }
+        }
+      }
+    </script>
 </head>
 <body>
 
@@ -25,7 +39,7 @@
         <button type="submit" onclick="deleteAllCookies('admin')">Log out</button>
       </div>
         <div class="testbox">
-          <form action="/add-email-domains" method="POST">
+          <form name="myForm" action="/add-email-domains" onsubmit="return validateForm()" method="POST">
             <div class="formdata">
                 <div class="banner">
               <h1>Add Email Domains to Whitelist</h1>
