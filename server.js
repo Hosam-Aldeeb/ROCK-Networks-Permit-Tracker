@@ -165,6 +165,7 @@ app.post("/admin-login", async (req, res) => {
         httpOnly: false,
         sameSite: "strict",
         path: "/",
+        domain: "https://rocknetworks-permit-tracker.com/",
       });
       console.log("set cookie =>", token);
       res.redirect("/add-email-domains");
@@ -227,6 +228,7 @@ app.post("/verify-code", async (req, res) => {
       httpOnly: false,
       sameSite: "strict",
       path: "/",
+      domain: "https://rocknetworks-permit-tracker.com/",
     });
     console.log("set cookie =>", token);
     res.redirect("/home");
