@@ -160,13 +160,7 @@ app.post("/admin-login", async (req, res) => {
         expiresIn: "1d",
       });
       console.log("admin token =>", token);
-      res.cookie("token", token, {
-        maxAge: 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: true,
-      });
+      res.cookie("token", token);
       console.log("set cookie =>", token);
       res.redirect("/add-email-domains");
     } else {

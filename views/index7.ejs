@@ -1,33 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ROCK Networks Permit Application Tracking</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="css/style5.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style5.css" />
     <script>
       function validateForm() {
         let email = document.forms["myForm"]["email"].value;
+        let password = document.forms["myForm"]["password"].value;
         const pattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,3}$/;
         if (!pattern.test(email)) {
           alert("Please enter the valid email");
           return false;
+        } else {
+          var headers = new Headers();
+          headers.append("Content-Type", "application/json");
+          headers.append("Accept", "application/json");
+          fetch("/admin-login", {
+            method: "POST",
+            mode: "same-origin",
+            redirect: "follow",
+            credentials: "include", // Don't forget to specify this if you need cookies
+            headers: headers,
+            body: JSON.stringify({
+              email: email,
+              password: password,
+            }),
+          });
         }
       }
     </script>
-</head>
-<body>
-  <div class="container">
-    <div class="login form">
-      <header>Admin Login</header>
-      <form name="myForm" action="/admin-login" onsubmit="return validateForm()" method="POST">
-        <input type="text" name="email" placeholder="Enter your email" required>
-        <input type="password" name="password" placeholder="Enter your password" required>
-        <input type="submit" class="button" value="Login">
-      </form>
+  </head>
+  <body>
+    <div class="container">
+      <div class="login form">
+        <header>Admin Login</header>
+        <form name="myForm" onsubmit="return validateForm()" method="post">
+          <input type="text" name="email" placeholder="Enter your email" required />
+          <input type="password" name="password" placeholder="Enter your password" required />
+          <input type="submit" class="button" value="Login" />
+        </form>
+      </div>
     </div>
-  </div>
-</body>
+  </body>
 </html>
