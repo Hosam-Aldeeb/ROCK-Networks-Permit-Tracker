@@ -162,10 +162,10 @@ app.post("/admin-login", async (req, res) => {
       console.log("admin token =>", token);
       res.cookie("token", token, {
         maxAge: 24 * 60 * 60 * 1000,
-        httpOnly: false,
-        sameSite: "strict",
+        httpOnly: true,
+        sameSite: "lax",
         path: "/",
-        domain: "https://rocknetworks-permit-tracker.com/",
+        secure: true,
       });
       console.log("set cookie =>", token);
       res.redirect("/add-email-domains");
