@@ -22,7 +22,7 @@
           var headers = new Headers();
           headers.append("Content-Type", "application/json");
           headers.append("Accept", "application/json");
-          headers.append("Cache-Control no-cache", "Set-Cookie");
+          headers.append("Cache-Control", "no-cache='Set-Cookie'");
           console.log("fetch method call");
           fetch("/admin-login", {
             method: "POST",
