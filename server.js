@@ -161,7 +161,6 @@ app.post("/admin-login", async (req, res) => {
       });
       console.log("admin token =>", token);
       res.cookie("token", token);
-      console.log("set cookie =>", token);
       res.redirect("/add-email-domains");
     } else {
       throw new Error("Invalid password.");
@@ -217,14 +216,7 @@ app.post("/verify-code", async (req, res) => {
       expiresIn: "1d",
     });
     console.log("token =>", token);
-    res.cookie("token", token, {
-      maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: false,
-      sameSite: "strict",
-      path: "/",
-      domain: "https://rocknetworks-permit-tracker.com/",
-    });
-    console.log("set cookie =>", token);
+    res.cookie("token", token);
     res.redirect("/home");
   } catch (error) {
     console.log("error =>", error);
