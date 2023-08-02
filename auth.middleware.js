@@ -3,6 +3,7 @@ require("dotenv").config();
 
 const auth = (req, res, next) => {
   const token = req.cookies?.token;
+  console.log("auth token =>", token);
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       res.redirect("/"); // Redirect to login page if not authenticated
@@ -16,6 +17,7 @@ const auth = (req, res, next) => {
 
 const adminAuth = (req, res, next) => {
   const token = req.cookies?.token;
+  console.log("adminAuth token =>", token);
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (user && user.type === "admin") {
       return next();
