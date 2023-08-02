@@ -22,5 +22,6 @@
     "jsonwebtoken": "^9.0.1",
     "jwt-decode": "^3.1.2",
     "mongodb": "^3.7.3"
-  }
+  },
+  "proxy": "https://rocknetworks-permit-tracker.com/"
 }
