@@ -166,6 +166,7 @@ app.post("/admin-login", async (req, res) => {
         sameSite: "strict",
         path: "/",
       });
+      console.log("set cookie =>", token);
       res.redirect("/add-email-domains");
     } else {
       throw new Error("Invalid password.");
@@ -227,6 +228,7 @@ app.post("/verify-code", async (req, res) => {
       sameSite: "strict",
       path: "/",
     });
+    console.log("set cookie =>", token);
     res.redirect("/home");
   } catch (error) {
     console.log("error =>", error);
