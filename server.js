@@ -203,7 +203,7 @@ app.post("/add-email-domains", adminAuth, async (req, res) => {
 app.post("/verify-code", async (req, res) => {
   try {
     const { email, verification_code } = req.body;
-    const user = await db.collection("users").findOne({ Email: email });
+    const user = await db.collection("users").findOne({ Email: email, Type: "user" });
 
     if (user.VerificationCode !== parseInt(verification_code)) {
       throw new Error("Invalid verification code, please try again.");
