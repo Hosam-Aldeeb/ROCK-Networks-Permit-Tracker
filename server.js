@@ -152,27 +152,26 @@ app.post("/admin-login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await db.collection("users").findOne({ Email: email, Type: "admin" });
-    console.log("admin user =>", user);
     if (!user) {
       throw new Error("User not found.");
     } else if (password === user.Password) {
       const token = jwt.sign({ email: user.Email, type: user.Type }, process.env.JWT_SECRET, {
         expiresIn: "1d",
       });
-      console.log("admin token =>", token);
       res.cookie("token", token);
       res.redirect("/add-email-domains");
     } else {
       throw new Error("Invalid password.");
     }
   } catch (error) {
-    console.log("admin error =>", error);
     res.render("admin-error.ejs", { errorMessage: error.message });
   }
 });
 
 app.get("/add-email-domains", adminAuth, async (req, res) => {
-  res.render("index6.ejs");
+  const domains = await db.collection("domain_whitelist").find().toArray();
+  const domainString = domains.map((item) => item.domain).join(",");
+  res.render("index6.ejs", { domainString: domainString });
 });
 
 app.post("/add-email-domains", adminAuth, async (req, res) => {
@@ -205,7 +204,6 @@ app.post("/verify-code", async (req, res) => {
   try {
     const { email, verification_code } = req.body;
     const user = await db.collection("users").findOne({ Email: email });
-    console.log("user =>", user);
 
     if (user.VerificationCode !== parseInt(verification_code)) {
       throw new Error("Invalid verification code, please try again.");
@@ -215,11 +213,9 @@ app.post("/verify-code", async (req, res) => {
     const token = jwt.sign({ email: user.Email, type: user.Type }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    console.log("token =>", token);
     res.cookie("token", token);
     res.redirect("/home");
   } catch (error) {
-    console.log("error =>", error);
     res.render("error.ejs", { errorMessage: error.message });
   }
 });
